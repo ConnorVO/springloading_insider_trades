@@ -4,11 +4,12 @@ import os
 import logging
 from typing import List
 
-from settings import SHOULD_SAVE_LOGS
+from settings import LOGGER_NAME, SHOULD_SAVE_LOGS
+from springloading_insider_trades.db.db import insert_filing_data
 from springloading_insider_trades.sec_api.classes.Form4Filing import Form4Filing
 from springloading_insider_trades.sec_api.sec_api import get_filings
 
-logger = logging.getLogger()
+logger = logging.getLogger(LOGGER_NAME)
 
 
 def _setup_logging(func_name: str, should_save_logs: bool = SHOULD_SAVE_LOGS):
@@ -33,6 +34,8 @@ def _setup_logging(func_name: str, should_save_logs: bool = SHOULD_SAVE_LOGS):
     sh.setFormatter(formatter)
     logger.addHandler(sh)
 
+    logger.propagate = False
+
 
 def run_daily():
     """
@@ -51,6 +54,9 @@ def run_daily():
     filings: List[Form4Filing] = get_filings(
         prev_start_date_string, prev_start_date_string
     )
+
+    for filing in filings:
+        insert_filing_data(filing)
 
     logger.info("Daily Finished")
 

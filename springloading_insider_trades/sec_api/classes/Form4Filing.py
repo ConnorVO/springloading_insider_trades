@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List
 
 from .Company import Company
-from .Transaction import Transaction
+from .Transaction import NonDerivTransaction, DerivTransaction
 
 
 class Form4Filing:
@@ -19,9 +19,10 @@ class Form4Filing:
         is_ten_percent_owner: bool,
         is_other: bool,
         owner_title: str,
-        non_deriv_transactions: List[Transaction],
-        deriv_transactions: List[Transaction],
+        non_deriv_transactions: List[NonDerivTransaction],
+        deriv_transactions: List[DerivTransaction],
         footnotes: List[str],
+        url: str,
     ):
         self.company = company
         self.filing_date = filing_date
@@ -35,9 +36,10 @@ class Form4Filing:
         self.non_deriv_transactions = non_deriv_transactions
         self.deriv_transactions = deriv_transactions
         self.footnotes = footnotes
+        self.url = url
 
     @classmethod
-    def from_xml(cls, xml, filing_date: datetime):
+    def from_xml(cls, xml, filing_date: datetime, url: str):
         company: Company = Company.from_issuer_xml(xml.find("issuer"))
 
         # only get the first reporting owner. If there are multiple, then it is a hedge fund and we don't care about the individuals, just the hedge fund
@@ -46,22 +48,23 @@ class Form4Filing:
         owner_name: str = xml_reporting_owner.reportingownerid.rptownername.text
         is_director: bool = (
             True
-            if xml_reporting_owner.reportingownerrelationship.isdirector == 1
+            if xml_reporting_owner.reportingownerrelationship.isdirector.text == "1"
             else False
         )
         is_officer: bool = (
             True
-            if xml_reporting_owner.reportingownerrelationship.isofficer == 1
+            if xml_reporting_owner.reportingownerrelationship.isofficer.text == "1"
             else False
         )
         is_ten_percent_owner: bool = (
             True
-            if xml_reporting_owner.reportingownerrelationship.istenpercentowner == 1
+            if xml_reporting_owner.reportingownerrelationship.istenpercentowner.text
+            == "1"
             else False
         )
         is_other: bool = (
             True
-            if xml_reporting_owner.reportingownerrelationship.isother == 1
+            if xml_reporting_owner.reportingownerrelationship.isother.text == "1"
             else False
         )
         owner_title = xml_reporting_owner.reportingownerrelationship.officertitle.text
@@ -71,7 +74,7 @@ class Form4Filing:
         for footnote in xml_footnotes:
             footnotes.append(footnote.text)
 
-        non_deriv_transactions: List[Transaction] = []
+        non_deriv_transactions: List[NonDerivTransaction] = []
         if xml.nonderivativetable and xml.nonderivativetable.find_all(
             "nonderivativetransaction"
         ):
@@ -80,10 +83,12 @@ class Form4Filing:
             )
             for xml_transaction in xml_non_deriv_transactions:
                 non_deriv_transactions.append(
-                    Transaction.from_transaction_xml(xml_transaction, xml_footnotes)
+                    NonDerivTransaction.from_transaction_xml(
+                        xml_transaction, xml.footnotes
+                    )
                 )
 
-        deriv_transactions: List[Transaction] = []
+        deriv_transactions: List[DerivTransaction] = []
         if xml.derivativetable and xml.derivativetable.find_all(
             "derivativetransaction"
         ):
@@ -92,7 +97,9 @@ class Form4Filing:
             )
             for xml_transaction in xml_deriv_transactions:
                 deriv_transactions.append(
-                    Transaction.from_transaction_xml(xml_transaction, xml_footnotes)
+                    DerivTransaction.from_transaction_xml(
+                        xml_transaction, xml.footnotes
+                    )
                 )
 
         return cls(
@@ -108,4 +115,22 @@ class Form4Filing:
             non_deriv_transactions,
             deriv_transactions,
             footnotes,
+            url,
         )
+
+    def get_db_json(self):
+        obj = {
+            "company": self.company.cik,
+            "filing_date": self.filing_date.isoformat(),
+            "owner_name": self.owner_name,
+            "owner_cik": self.owner_cik,
+            "is_director": self.is_director,
+            "is_officer": self.is_officer,
+            "is_ten_percent_owner": self.is_ten_percent_owner,
+            "is_other": self.is_other,
+            "owner_title": self.owner_title,
+            "footnotes": self.footnotes,
+            "url": self.url,
+        }
+
+        return obj

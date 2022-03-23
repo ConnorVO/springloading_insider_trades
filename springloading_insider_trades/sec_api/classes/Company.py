@@ -11,3 +11,8 @@ class Company:
             xml.issuername.text,
             xml.issuertradingsymbol.text,
         )
+
+    def get_db_json(self):
+        obj = {"cik": self.cik, "name": self.name, "ticker": self.ticker}
+
+        return obj
