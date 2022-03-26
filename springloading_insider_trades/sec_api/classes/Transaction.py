@@ -14,6 +14,7 @@ class Transaction:
         acquired_disposed_code: str,
         direct_or_indirect_ownership: str,
         footnotes: List[str],
+        filing_id: str,
     ):
         self.date = date
         self.security_type = security_type
@@ -24,12 +25,13 @@ class Transaction:
         self.acquired_disposed_code = acquired_disposed_code
         self.direct_or_indirect_ownership = direct_or_indirect_ownership
         self.footnotes = footnotes
+        self.filing_id = filing_id
 
     def get_share_pct_increase(self):
         return self.num_shares_after / self.num_shares - 1
 
     @classmethod
-    def from_transaction_xml(cls, xml, footnote_xml):
+    def from_transaction_xml(cls, xml, footnote_xml, filing_id):
         date = datetime.strptime(xml.transactiondate.value.text, "%Y-%m-%d")
         security_type = xml.securitytitle.value.text
         code = xml.transactioncoding.transactioncode.text
@@ -64,6 +66,7 @@ class Transaction:
             acquired_disposed_code,
             direct_or_indirect_ownership,
             footnotes,
+            filing_id,
         )
 
 
@@ -71,24 +74,45 @@ class NonDerivTransaction(Transaction):
     transaction_type = "non-derivative"
 
     @classmethod
-    def from_transaction_xml(cls, xml, footnote_xml):
+    def from_transaction_xml(cls, xml, footnote_xml, filing_id: str):
         execution_date = (
             datetime.strptime(xml.deemedexecutiondate.value.text, "%Y-%m-%d")
             if xml.deemedexecutiondate.value and xml.deemedexecutiondate.value.text
             else None
         )
-        res = super().from_transaction_xml(xml, footnote_xml)
+        res = super().from_transaction_xml(xml, footnote_xml, filing_id)
         res.__dict__["execution_date"] = execution_date
         res.__dict__["transaction_type"] = cls.transaction_type
 
         return res
+
+    def get_db_json(self):
+        obj = {
+            "date": self.date.isoformat(),
+            "security_type": self.security_type,
+            "code": self.code,
+            "num_shares": self.num_shares,
+            "share_price": self.share_price,
+            "num_shares_after": self.num_shares_after,
+            "acquired_disposed_code": self.acquired_disposed_code,
+            "direct_or_indirect_ownership": self.direct_or_indirect_ownership,
+            "footnotes": self.footnotes,
+            "filing": self.filing_id,
+            "footnotes": self.footnotes,
+            "transaction_type": self.transaction_type,
+            "execution_date": self.execution_date.isoformat()
+            if self.execution_date
+            else None,
+        }
+
+        return obj
 
 
 class DerivTransaction(Transaction):
     transaction_type = "derivative"
 
     @classmethod
-    def from_transaction_xml(cls, xml, footnote_xml):
+    def from_transaction_xml(cls, xml, footnote_xml, filing_id: str):
         exercise_price = float(xml.conversionorexerciseprice.value.text)
         exercise_date = (
             datetime.strptime(xml.transactiondate.value.text, "%Y-%m-%d")
@@ -106,7 +130,7 @@ class DerivTransaction(Transaction):
         )
         underlying_security_num_shares = int(xml.underlyingsecurityshares.value.text)
 
-        res = super().from_transaction_xml(xml, footnote_xml)
+        res = super().from_transaction_xml(xml, footnote_xml, filing_id)
         res.__dict__["exercise_price"] = exercise_price
         res.__dict__["exercise_date"] = exercise_date
         res.__dict__["expiration_date"] = expiration_date
@@ -115,3 +139,30 @@ class DerivTransaction(Transaction):
         res.__dict__["transaction_type"] = cls.transaction_type
 
         return res
+
+    def get_db_json(self):
+        obj = {
+            "date": self.date.isoformat(),
+            "security_type": self.security_type,
+            "code": self.code,
+            "num_shares": self.num_shares,
+            "share_price": self.share_price,
+            "num_shares_after": self.num_shares_after,
+            "acquired_disposed_code": self.acquired_disposed_code,
+            "direct_or_indirect_ownership": self.direct_or_indirect_ownership,
+            "footnotes": self.footnotes,
+            "filing": self.filing_id,
+            "footnotes": self.footnotes,
+            "transaction_type": self.transaction_type,
+            "exercise_price": self.exercise_price,
+            "exercise_date": self.exercise_date.isoformat()
+            if self.exercise_date
+            else None,
+            "expiration_date": self.expiration_date.isoformat()
+            if self.expiration_date
+            else None,
+            "underlying_security_type": self.underlying_security_type,
+            "underlying_security_num_shares": self.underlying_security_num_shares,
+        }
+
+        return obj

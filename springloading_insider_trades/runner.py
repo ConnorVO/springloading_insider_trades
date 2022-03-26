@@ -55,8 +55,8 @@ def run_daily():
         prev_start_date_string, prev_start_date_string
     )
 
-    for filing in filings:
-        insert_filing_data(filing)
+    # for filing in filings:
+    #     insert_filing_data(filing)
 
     logger.info("Daily Finished")
 

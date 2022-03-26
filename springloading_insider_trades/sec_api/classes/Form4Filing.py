@@ -38,6 +38,12 @@ class Form4Filing:
         self.footnotes = footnotes
         self.url = url
 
+        # composite primary key that will be used to guarantee uniqueness and reference from transactions
+        self.id = company.cik + filing_date.isoformat() + owner_cik
+
+    def get_all_transactions(self):
+        return self.non_deriv_transactions + self.deriv_transactions
+
     @classmethod
     def from_xml(cls, xml, filing_date: datetime, url: str):
         company: Company = Company.from_issuer_xml(xml.find("issuer"))
@@ -74,6 +80,9 @@ class Form4Filing:
         for footnote in xml_footnotes:
             footnotes.append(footnote.text)
 
+        # Probably not the best that I have to recreate here to pass into transactions
+        filing_id: str = company.cik + filing_date.isoformat() + owner_cik
+
         non_deriv_transactions: List[NonDerivTransaction] = []
         if xml.nonderivativetable and xml.nonderivativetable.find_all(
             "nonderivativetransaction"
@@ -84,7 +93,7 @@ class Form4Filing:
             for xml_transaction in xml_non_deriv_transactions:
                 non_deriv_transactions.append(
                     NonDerivTransaction.from_transaction_xml(
-                        xml_transaction, xml.footnotes
+                        xml_transaction, xml.footnotes, filing_id
                     )
                 )
 
@@ -98,7 +107,7 @@ class Form4Filing:
             for xml_transaction in xml_deriv_transactions:
                 deriv_transactions.append(
                     DerivTransaction.from_transaction_xml(
-                        xml_transaction, xml.footnotes
+                        xml_transaction, xml.footnotes, filing_id
                     )
                 )
 
@@ -120,6 +129,7 @@ class Form4Filing:
 
     def get_db_json(self):
         obj = {
+            "id": self.id,
             "company": self.company.cik,
             "filing_date": self.filing_date.isoformat(),
             "owner_name": self.owner_name,

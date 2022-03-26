@@ -11,6 +11,7 @@ lxml = "*"
 sec-api = "*"
 python-dotenv = "*"
 supabase = "*"
+pytest = "*"
 
 [dev-packages]
 black = "*"

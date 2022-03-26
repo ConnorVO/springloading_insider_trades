@@ -35,8 +35,8 @@ def get_filings(start_date_string: str, end_date_string: str):
     for url in [
         (
             datetime.strptime("2021-09-02T19:59:40-04:00", SEC_API_DATETIME_FORMAT),
-            # "https://www.sec.gov/Archives/edgar/data/1810806/000095014221002915/xslF345X03/es210184239_4-otee.xml"
-            "https://www.sec.gov/Archives/edgar/data/1133470/000125085321000093/xslF345X03/primary_doc.xml",
+            "https://www.sec.gov/Archives/edgar/data/1810806/000095014221002915/xslF345X03/es210184239_4-otee.xml"
+            # "https://www.sec.gov/Archives/edgar/data/1133470/000125085321000093/xslF345X03/primary_doc.xml",
         )
     ]:  # xml_urls:
         try:
@@ -53,6 +53,8 @@ def get_filings(start_date_string: str, end_date_string: str):
             )
             continue
 
-        form4_filings.append(scrape_form4filing_from_xml(filing_text, url[0], url[1]))
+        form4Filing = scrape_form4filing_from_xml(filing_text, url[0], url[1])
+        if form4Filing:
+            form4_filings.append(form4Filing)
 
     return form4_filings

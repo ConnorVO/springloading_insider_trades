@@ -12,11 +12,11 @@ logger = logging.getLogger(LOGGER_NAME)
 def scrape_form4filing_from_xml(text: str, filing_date: datetime, url: str):
     # $save
     soup = BeautifulSoup(text, "lxml")
-    form4Filing: Form4Filing = Form4Filing.from_xml(soup, filing_date, url)
+    try:
+        form4Filing: Form4Filing = Form4Filing.from_xml(soup, filing_date, url)
+    except AttributeError as e:
+        logger.exception(e)
+    except Exception as e:
+        logger.exception(f"Unknown error creating Form4Filing:\n{e}")
 
-    import pprint
-
-    for t in form4Filing.deriv_transactions:
-        pprint.PrettyPrinter().pprint(t.__dict__)
-
-    return form4Filing
+    return form4Filing if form4Filing else None
