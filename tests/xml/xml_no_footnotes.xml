@@ -11,7 +11,7 @@
 
     <issuer>
         <issuerCik>0001133470</issuerCik>
-        <!-- <issuerName>CALAVO GROWERS INC</issuerName> -->
+        <issuerName>CALAVO GROWERS INC</issuerName>
         <issuerTradingSymbol>CVGW</issuerTradingSymbol>
     </issuer>
 
@@ -68,7 +68,6 @@
                 </transactionAcquiredDisposedCode>
             </transactionAmounts>
             <exerciseDate>
-                <footnoteId id="F1"/>
             </exerciseDate>
             <expirationDate>
                 <value>2024-09-08</value>
@@ -93,10 +92,6 @@
             </ownershipNature>
         </derivativeTransaction>
     </derivativeTable>
-
-    <footnotes>
-        <footnote id="F1">The option vests in two equal annual installments beginning on September 9, 2022.</footnote>
-    </footnotes>
 
     <ownerSignature>
         <signatureName>/s/ Tao Li, as attorney in fact</signatureName>

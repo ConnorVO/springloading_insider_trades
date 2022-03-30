@@ -30,15 +30,9 @@ def get_filings(start_date_string: str, end_date_string: str):
         for x in sec_api_filings
         if not x["ticker"]
     ]
-    form4_filings: List[Form4Filing] = []
+
     logger.info("Getting edgar form4 info for each sec_query result")
-    for url in [
-        (
-            datetime.strptime("2021-09-02T19:59:40-04:00", SEC_API_DATETIME_FORMAT),
-            "https://www.sec.gov/Archives/edgar/data/1810806/000095014221002915/xslF345X03/es210184239_4-otee.xml"
-            # "https://www.sec.gov/Archives/edgar/data/1133470/000125085321000093/xslF345X03/primary_doc.xml",
-        )
-    ]:  # xml_urls:
+    for url in urls:
         try:
             edgar_res = fetch_edgar_data(get_xml_url(url[1]))
         except requests.exceptions.HTTPError as err:
@@ -53,8 +47,12 @@ def get_filings(start_date_string: str, end_date_string: str):
             )
             continue
 
+        form4_filings: List[Form4Filing] = []
+        error_urls: List[str] = []
         form4Filing = scrape_form4filing_from_xml(filing_text, url[0], url[1])
         if form4Filing:
             form4_filings.append(form4Filing)
+        else:
+            error_urls.append(url)
 
-    return form4_filings
+    return form4_filings, error_urls

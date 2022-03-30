@@ -51,12 +51,21 @@ def run_daily():
 
     logger.info(f"Getting daily data for {prev_start_date_string}")
 
-    filings: List[Form4Filing] = get_filings(
-        prev_start_date_string, prev_start_date_string
-    )
+    filings: List[Form4Filing] = []
+    error_urls: List[str] = []
+    filings, error_urls = get_filings(prev_start_date_string, prev_start_date_string)
+
+    for filing in filings:
+        import pprint
+
+        pprint.PrettyPrinter().pprint(filing.__dict__)
 
     # for filing in filings:
     #     insert_filing_data(filing)
+
+    if error_urls:
+        # send email with errors (or save in DB)
+        print("error urls")
 
     logger.info("Daily Finished")
 

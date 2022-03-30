@@ -75,10 +75,11 @@ class Form4Filing:
         )
         owner_title = xml_reporting_owner.reportingownerrelationship.officertitle.text
 
-        xml_footnotes = xml.footnotes.find_all("footnote")
         footnotes: List[str] = []
-        for footnote in xml_footnotes:
-            footnotes.append(footnote.text)
+        if xml.footnotes:
+            xml_footnotes = xml.footnotes.find_all("footnote")
+            for footnote in xml_footnotes:
+                footnotes.append(footnote.text)
 
         # Probably not the best that I have to recreate here to pass into transactions
         filing_id: str = company.cik + filing_date.isoformat() + owner_cik
