@@ -1,0 +1,302 @@
+<ownershipDocument>
+<script> try { Object.defineProperty(navigator, "globalPrivacyControl", { value: false, configurable: false, writable: false }); document.currentScript.parentElement.removeChild(document.currentScript); } catch(e) {}; </script>
+<schemaVersion>X0306</schemaVersion>
+<documentType>4</documentType>
+<periodOfReport>2021-10-22</periodOfReport>
+<notSubjectToSection16>0</notSubjectToSection16>
+<issuer>
+<issuerCik>0001796022</issuerCik>
+<issuerName>StepStone Group Inc.</issuerName>
+<issuerTradingSymbol>STEP</issuerTradingSymbol>
+</issuer>
+<reportingOwner>
+<reportingOwnerId>
+<rptOwnerCik>0001822880</rptOwnerCik>
+<rptOwnerName>McCabe Michael I</rptOwnerName>
+</reportingOwnerId>
+<reportingOwnerAddress>
+<rptOwnerStreet1>C/O STEPSTONE GROUP INC.</rptOwnerStreet1>
+<rptOwnerStreet2>450 LEXINGTON AVENUE, 31ST FLOOR</rptOwnerStreet2>
+<rptOwnerCity>NEW YORK</rptOwnerCity>
+<rptOwnerState>NY</rptOwnerState>
+<rptOwnerZipCode>10017</rptOwnerZipCode>
+<rptOwnerStateDescription/>
+</reportingOwnerAddress>
+<reportingOwnerRelationship>
+<isDirector>1</isDirector>
+<isOfficer>1</isOfficer>
+<isTenPercentOwner>0</isTenPercentOwner>
+<isOther>1</isOther>
+<officerTitle>Head of Strategy</officerTitle>
+<otherText>See remarks</otherText>
+</reportingOwnerRelationship>
+</reportingOwner>
+<nonDerivativeTable>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Class A Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-22</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>S</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>18100</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>43.94</value>
+<footnoteId id="F1"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>34427</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Class A Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-22</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>S</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>18032</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>43.93</value>
+<footnoteId id="F2"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>34500</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>I</value>
+</directOrIndirectOwnership>
+<natureOfOwnership>
+<value>By Trust</value>
+</natureOfOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Class A Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-25</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>S</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>24817</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>44.75</value>
+<footnoteId id="F3"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>9610</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Class A Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-25</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>S</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>24814</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>44.75</value>
+<footnoteId id="F4"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>9686</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>I</value>
+</directOrIndirectOwnership>
+<natureOfOwnership>
+<value>By Trust</value>
+</natureOfOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Class A Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-26</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>S</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>9610</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>45.04</value>
+<footnoteId id="F5"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>0</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Class A Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-26</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>S</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>9686</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>45.03</value>
+<footnoteId id="F6"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>0</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>I</value>
+</directOrIndirectOwnership>
+<natureOfOwnership>
+<value>By Trust</value>
+</natureOfOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeHolding>
+<securityTitle>
+<value>Class B Common Stock</value>
+</securityTitle>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>2738726</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeHolding>
+<nonDerivativeHolding>
+<securityTitle>
+<value>Class B Common Stock</value>
+</securityTitle>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>1520000</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>I</value>
+</directOrIndirectOwnership>
+<natureOfOwnership>
+<value>By Trust</value>
+</natureOfOwnership>
+</ownershipNature>
+</nonDerivativeHolding>
+</nonDerivativeTable>
+<derivativeTable/>
+<footnotes>
+<footnote id="F1">The sales reported in this Form 4 were effected pursuant to a Rule 10b5-1 trading plan in multiple trades at prices ranging from $43.00 to $44.78. The price reported above reflects the weighted average sales price. The Reporting Person hereby undertakes to provide upon request to the SEC staff, the Issuer or a security holder of the Issuer full information regarding the number of shares and prices at which the transaction was effected.</footnote>
+<footnote id="F2">The sales reported in this Form 4 were effected pursuant to a Rule 10b5-1 trading plan in multiple trades at prices ranging from $43.00 to $44.76. The price reported above reflects the weighted average sales price. The Reporting Person hereby undertakes to provide upon request to the SEC staff, the Issuer or a security holder of the Issuer full information regarding the number of shares and prices at which the transaction was effected.</footnote>
+<footnote id="F3">The sales reported in this Form 4 were effected pursuant to a Rule 10b5-1 trading plan in multiple trades at prices ranging from $43.18 to $45.37. The price reported above reflects the weighted average sales price. The Reporting Person hereby undertakes to provide upon request to the SEC staff, the Issuer or a security holder of the Issuer full information regarding the number of shares and prices at which the transaction was effected.</footnote>
+<footnote id="F4">The sales reported in this Form 4 were effected pursuant to a Rule 10b5-1 trading plan in multiple trades at prices ranging from $43.42 to $45.38. The price reported above reflects the weighted average sales price. The Reporting Person hereby undertakes to provide upon request to the SEC staff, the Issuer or a security holder of the Issuer full information regarding the number of shares and prices at which the transaction was effected.</footnote>
+<footnote id="F5">The sales reported in this Form 4 were effected pursuant to a Rule 10b5-1 trading plan in multiple trades at prices ranging from $44.35 to $45.36. The price reported above reflects the weighted average sales price. The Reporting Person hereby undertakes to provide upon request to the SEC staff, the Issuer or a security holder of the Issuer full information regarding the number of shares and prices at which the transaction was effected.</footnote>
+<footnote id="F6">The sales reported in this Form 4 were effected pursuant to a Rule 10b5-1 trading plan in multiple trades at prices ranging from $44.36 to $45.36. The price reported above reflects the weighted average sales price. The Reporting Person hereby undertakes to provide upon request to the SEC staff, the Issuer or a security holder of the Issuer full information regarding the number of shares and prices at which the transaction was effected.</footnote>
+</footnotes>
+<remarks>Member of 13D Group that owns more than 10%</remarks>
+<ownerSignature>
+<signatureName>/s/ Jennifer Ishiguro, Attorney-in-fact for Michael I. McCabe</signatureName>
+<signatureDate>2021-10-26</signatureDate>
+</ownerSignature>
+</ownershipDocument>

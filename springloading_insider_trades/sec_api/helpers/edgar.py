@@ -9,7 +9,7 @@ def fetch_edgar_data(url: str) -> requests.Response:
         "Accept-Encoding": "gzip,deflate",
     }
 
-    response = requests.get(url, headers=headers, verify=False)
+    response = requests.get(url, headers=headers)
 
     return response
 

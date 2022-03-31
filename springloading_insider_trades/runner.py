@@ -53,7 +53,10 @@ def run_daily():
 
     filings: List[Form4Filing] = []
     error_urls: List[str] = []
-    filings, error_urls = get_filings(prev_start_date_string, prev_start_date_string)
+    # THIS MUST RETURN LESS THAN 10,000 RESULTS OR SEC_API BREAKS. SO BREAK UP THE DATES IF YOU NEED MORE
+    filings, error_urls = get_filings(
+        "2021-10-08", "2021-10-27"
+    )  # get_filings(prev_start_date_string, prev_start_date_string)
 
     for filing in filings:
         import pprint
@@ -66,7 +69,11 @@ def run_daily():
     if error_urls:
         # send email with errors (or save in DB)
         print("error urls")
+        for url in error_urls:
+            logger.info(f"Error URL -> {url}")
 
+    logger.info(f"Found {len(filings)} final filings")
+    logger.info(f"Found {len(error_urls)} errors")
     logger.info("Daily Finished")
 
 

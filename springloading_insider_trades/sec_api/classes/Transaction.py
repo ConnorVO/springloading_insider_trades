@@ -8,9 +8,9 @@ class Transaction:
         date: datetime,
         security_type: str,
         code: str,
-        num_shares: int,
+        num_shares: float,
         share_price: float,
-        num_shares_after: int,
+        num_shares_after: float,
         acquired_disposed_code: str,
         direct_or_indirect_ownership: str,
         footnotes: List[str],
@@ -32,22 +32,62 @@ class Transaction:
 
     @classmethod
     def from_transaction_xml(cls, xml, footnote_xml, filing_id):
-        date = datetime.strptime(xml.transactiondate.value.text, "%Y-%m-%d")
-        security_type = xml.securitytitle.value.text
-        code = xml.transactioncoding.transactioncode.text
+        date = None
+        for fmt in ["%Y-%m-%d", "%Y-%m-%d%z", "%Y-%m-%d-%I:%M", "%Y-%m-%d+%I:%M"]:
+            try:
+                date = (
+                    datetime.strptime(xml.transactiondate.value.text, fmt)
+                    if xml.transactiondate and xml.transactiondate.value
+                    else None
+                )
+            except ValueError:
+                pass
 
-        num_shares = int(xml.transactionamounts.transactionshares.value.text)
-        share_price = float(xml.transactionamounts.transactionpricepershare.value.text)
+        security_type = (
+            xml.securitytitle.value.text
+            if xml.securitytitle and xml.securitytitle.value
+            else None
+        )
+        code = (
+            xml.transactioncoding.transactioncode.text
+            if xml.transactioncoding and xml.transactioncoding.transactioncode
+            else None
+        )
 
-        num_shares_after = int(
-            xml.posttransactionamounts.sharesownedfollowingtransaction.value.text
+        num_shares = (
+            float(xml.transactionamounts.transactionshares.value.text)
+            if xml.transactionamounts
+            and xml.transactionamounts.transactionshares
+            and xml.transactionamounts.transactionshares.value
+            else None
+        )
+        share_price = (
+            float(xml.transactionamounts.transactionpricepershare.value.text)
+            if xml.transactionamounts
+            and xml.transactionamounts.transactionpricepershare
+            and xml.transactionamounts.transactionpricepershare.value
+            else None
+        )
+
+        num_shares_after = (
+            float(xml.posttransactionamounts.sharesownedfollowingtransaction.value.text)
+            if xml.posttransactionamounts
+            and xml.posttransactionamounts.sharesownedfollowingtransaction
+            and xml.posttransactionamounts.sharesownedfollowingtransaction.value
+            else None
         )
         acquired_disposed_code = (
-            xml.transactionamounts.transactionacquireddisposedcode.value.text.strip()
+            (xml.transactionamounts.transactionacquireddisposedcode.value.text.strip())
+            if xml.transactionamounts
+            and xml.transactionamounts.transactionacquireddisposedcode
+            and xml.transactionamounts.transactionacquireddisposedcode.value
+            else None
         )
 
         direct_or_indirect_ownership = (
-            xml.ownershipnature.directorindirectownership.text.strip()
+            (xml.ownershipnature.directorindirectownership.text.strip())
+            if xml.ownershipnature and xml.ownershipnature.directorindirectownership
+            else None
         )
 
         footnote_ids = xml.find_all("footnoteid")
@@ -75,11 +115,19 @@ class NonDerivTransaction(Transaction):
 
     @classmethod
     def from_transaction_xml(cls, xml, footnote_xml, filing_id: str):
-        execution_date = (
-            datetime.strptime(xml.deemedexecutiondate.value.text, "%Y-%m-%d")
-            if xml.deemedexecutiondate.value and xml.deemedexecutiondate.value.text
-            else None
-        )
+        execution_date = None
+        for fmt in ["%Y-%m-%d", "%Y-%m-%d%z", "%Y-%m-%d-%I:%M", "%Y-%m-%d+%I:%M"]:
+            try:
+                execution_date = (
+                    datetime.strptime(xml.deemedexecutiondate.value.text, fmt)
+                    if xml.deemedexecutiondate
+                    and xml.deemedexecutiondate.value
+                    and xml.deemedexecutiondate.value.text
+                    else None
+                )
+            except ValueError:
+                pass
+
         res = super().from_transaction_xml(xml, footnote_xml, filing_id)
         res.__dict__["execution_date"] = execution_date
         res.__dict__["transaction_type"] = cls.transaction_type
@@ -113,22 +161,50 @@ class DerivTransaction(Transaction):
 
     @classmethod
     def from_transaction_xml(cls, xml, footnote_xml, filing_id: str):
-        exercise_price = float(xml.conversionorexerciseprice.value.text)
-        exercise_date = (
-            datetime.strptime(xml.transactiondate.value.text, "%Y-%m-%d")
-            if xml.transactiondate.value and xml.transactiondate.value.text
-            else None
-        )
-        expiration_date = (
-            datetime.strptime(xml.expirationdate.value.text, "%Y-%m-%d")
-            if xml.expirationdate.value and xml.expirationdate.value.text
+        exercise_price = (
+            float(xml.conversionorexerciseprice.value.text)
+            if xml.conversionorexerciseprice and xml.conversionorexerciseprice.value
             else None
         )
 
+        exercise_date = None
+        for fmt in ["%Y-%m-%d", "%Y-%m-%d%z", "%Y-%m-%d-%I:%M", "%Y-%m-%d+%I:%M"]:
+            try:
+                exercise_date = (
+                    datetime.strptime(xml.transactiondate.value.text, fmt)
+                    if xml.transactiondate
+                    and xml.transactiondate.value
+                    and xml.transactiondate.value.text
+                    else None
+                )
+            except ValueError:
+                pass
+
+        expiration_date = None
+        for fmt in ["%Y-%m-%d", "%Y-%m-%d%z", "%Y-%m-%d-%I:%M", "%Y-%m-%d+%I:%M"]:
+            try:
+                expiration_date = (
+                    datetime.strptime(xml.expirationdate.value.text, fmt)
+                    if xml.expirationdate
+                    and xml.expirationdate.value
+                    and xml.expirationdate.value.text
+                    else None
+                )
+            except ValueError:
+                pass
+
         underlying_security_type = (
-            xml.underlyingsecurity.underlyingsecuritytitle.value.text
+            (xml.underlyingsecurity.underlyingsecuritytitle.value.text)
+            if xml.underlyingsecurity
+            and xml.underlyingsecurity.underlyingsecuritytitle
+            and xml.underlyingsecurity.underlyingsecuritytitle.value
+            else None
         )
-        underlying_security_num_shares = int(xml.underlyingsecurityshares.value.text)
+        underlying_security_num_shares = (
+            float(xml.underlyingsecurityshares.value.text)
+            if xml.underlyingsecurityshares and xml.underlyingsecurityshares.value
+            else None
+        )
 
         res = super().from_transaction_xml(xml, footnote_xml, filing_id)
         res.__dict__["exercise_price"] = exercise_price

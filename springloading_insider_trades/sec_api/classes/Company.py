@@ -7,9 +7,9 @@ class Company:
     @classmethod
     def from_issuer_xml(cls, xml):
         return cls(
-            xml.issuercik.text,
-            xml.issuername.text,
-            xml.issuertradingsymbol.text,
+            xml.issuercik.text if xml.issuercik else None,
+            xml.issuername.text if xml.issuerername else None,
+            xml.issuertradingsymbol.text if xml.issuertradingsymbol else None,
         )
 
     def get_db_json(self):

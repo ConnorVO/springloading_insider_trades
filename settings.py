@@ -7,6 +7,7 @@ load_dotenv()
 
 SEC_QUERY_API = QueryApi(api_key=os.getenv("QUERY_API_KEY"))
 SEC_API_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
+SEC_QUERY_SIZE = 200
 
 SHOULD_SAVE_LOGS = os.getenv("SHOULD_SAVE_LOGS", "False").lower() in ("true", "1", "t")
 

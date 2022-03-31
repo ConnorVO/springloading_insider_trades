@@ -1,0 +1,176 @@
+<ownershipDocument>
+<script> try { Object.defineProperty(navigator, "globalPrivacyControl", { value: false, configurable: false, writable: false }); document.currentScript.parentElement.removeChild(document.currentScript); } catch(e) {}; </script>
+<schemaVersion>X0306</schemaVersion>
+<documentType>4</documentType>
+<periodOfReport>2021-10-22</periodOfReport>
+<notSubjectToSection16>0</notSubjectToSection16>
+<issuer>
+<issuerCik>0000105132</issuerCik>
+<issuerName>WD 40 CO</issuerName>
+<issuerTradingSymbol>WDFC</issuerTradingSymbol>
+</issuer>
+<reportingOwner>
+<reportingOwnerId>
+<rptOwnerCik>0001191649</rptOwnerCik>
+<rptOwnerName>RIDGE GARRY O</rptOwnerName>
+</reportingOwnerId>
+<reportingOwnerAddress>
+<rptOwnerStreet1>9715 BUSINESSPARK AVENUE</rptOwnerStreet1>
+<rptOwnerStreet2/>
+<rptOwnerCity>SAN DIEGO</rptOwnerCity>
+<rptOwnerState>CA</rptOwnerState>
+<rptOwnerZipCode>92131</rptOwnerZipCode>
+<rptOwnerStateDescription/>
+</reportingOwnerAddress>
+<reportingOwnerRelationship>
+<isDirector>1</isDirector>
+<isOfficer>1</isOfficer>
+<isTenPercentOwner>0</isTenPercentOwner>
+<isOther>0</isOther>
+<officerTitle>CEO and Board Chair</officerTitle>
+<otherText/>
+</reportingOwnerRelationship>
+</reportingOwner>
+<nonDerivativeTable>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-22</value>
+</transactionDate>
+<deemedExecutionDate/>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>F</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>2032</value>
+<footnoteId id="F1"/>
+</transactionShares>
+<transactionPricePerShare>
+<footnoteId id="F1"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>66340.648</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-22</value>
+</transactionDate>
+<deemedExecutionDate/>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>F</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>3961</value>
+<footnoteId id="F2"/>
+</transactionShares>
+<transactionPricePerShare>
+<footnoteId id="F2"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>62379.648</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2021-10-22</value>
+</transactionDate>
+<deemedExecutionDate/>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>F</transactionCode>
+<equitySwapInvolved>0</equitySwapInvolved>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>1672</value>
+<footnoteId id="F3"/>
+</transactionShares>
+<transactionPricePerShare>
+<footnoteId id="F3"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>60707.648</value>
+<footnoteId id="F4"/>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeHolding>
+<securityTitle>
+<value>Common Stock</value>
+</securityTitle>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>12460.505</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>I</value>
+</directOrIndirectOwnership>
+<natureOfOwnership>
+<value>By Spouse</value>
+<footnoteId id="F5"/>
+</natureOfOwnership>
+</ownershipNature>
+</nonDerivativeHolding>
+</nonDerivativeTable>
+<derivativeTable/>
+<footnotes>
+<footnote id="F1">Shares withheld pursuant to mandatory provisions of Restricted Stock Unit (RSU) Award Agreements in satisfaction of tax withholding obligation upon settlement of 4,095 RSUs (Common Stock equivalents).</footnote>
+<footnote id="F2">Shares withheld pursuant to mandatory provisions of Market Stock Unit (MSU) Award Agreements in satisfaction of tax withholding obligation upon settlement of 7,988 MSUs (Common Stock equivalents).</footnote>
+<footnote id="F3">Shares withheld pursuant to mandatory provisions of Performance Share Unit (PSU) Restricted Stock Award Agreement in satisfaction of tax withholding obligation upon settlement of 3,372 PSUs (Common Stock equivalents).</footnote>
+<footnote id="F4">Total includes 1,298.648 shares held in WD-40 Company Profit Sharing Plan (Company Stock Fund) account. Total also includes 1,700 shares of restricted Common Stock issued upon settlement of vested PSUs, 13,413 RSUs, 7,529 of which are subject to future vesting, and 967 vested Deferred Performance Units (Common Stock equivalents).</footnote>
+<footnote id="F5">The reporting person disclaims beneficial ownership of these shares and this report of indirect beneficial ownership shall not be deemed an admission that the reporting person is, for purposes of Section 16 of the Act or otherwise, the beneficial owner of such shares.</footnote>
+</footnotes>
+<ownerSignature>
+<signatureName>Richard T. Clampitt, attorney-in-fact for Garry O. Ridge</signatureName>
+<signatureDate>2021-10-26</signatureDate>
+</ownerSignature>
+</ownershipDocument>

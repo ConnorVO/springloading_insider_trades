@@ -54,26 +54,39 @@ class Form4Filing:
         owner_name: str = xml_reporting_owner.reportingownerid.rptownername.text
         is_director: bool = (
             True
-            if xml_reporting_owner.reportingownerrelationship.isdirector.text == "1"
+            if xml_reporting_owner.reportingownerrelationship
+            and xml_reporting_owner.reportingownerrelationship.isdirector
+            and xml_reporting_owner.reportingownerrelationship.isdirector.text == "1"
             else False
         )
         is_officer: bool = (
             True
-            if xml_reporting_owner.reportingownerrelationship.isofficer.text == "1"
+            if xml_reporting_owner.reportingownerrelationship
+            and xml_reporting_owner.reportingownerrelationship.isofficer
+            and xml_reporting_owner.reportingownerrelationship.isofficer.text == "1"
             else False
         )
         is_ten_percent_owner: bool = (
             True
-            if xml_reporting_owner.reportingownerrelationship.istenpercentowner.text
+            if xml_reporting_owner.reportingownerrelationship
+            and xml_reporting_owner.reportingownerrelationship.istenpercentowner
+            and xml_reporting_owner.reportingownerrelationship.istenpercentowner.text
             == "1"
             else False
         )
         is_other: bool = (
             True
-            if xml_reporting_owner.reportingownerrelationship.isother.text == "1"
+            if xml_reporting_owner.reportingownerrelationship
+            and xml_reporting_owner.reportingownerrelationship.isother
+            and xml_reporting_owner.reportingownerrelationship.isother.text == "1"
             else False
         )
-        owner_title = xml_reporting_owner.reportingownerrelationship.officertitle.text
+        owner_title = (
+            xml_reporting_owner.reportingownerrelationship.officertitle.text
+            if xml_reporting_owner.reportingownerrelationship
+            and xml_reporting_owner.reportingownerrelationship.officertitle
+            else None
+        )
 
         footnotes: List[str] = []
         if xml.footnotes:
