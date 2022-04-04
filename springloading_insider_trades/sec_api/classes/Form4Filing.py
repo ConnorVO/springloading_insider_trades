@@ -144,7 +144,7 @@ class Form4Filing:
     def get_db_json(self):
         obj = {
             "id": self.id,
-            "company": self.company.cik,
+            "company_id": self.company.cik,
             "filing_date": self.filing_date.isoformat(),
             "owner_name": self.owner_name,
             "owner_cik": self.owner_cik,

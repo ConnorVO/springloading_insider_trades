@@ -5,7 +5,7 @@ import logging
 from typing import List
 
 from settings import LOGGER_NAME, SHOULD_SAVE_LOGS
-from springloading_insider_trades.db.db import insert_filing_data
+from springloading_insider_trades.db.db import insert_error_url, insert_filing_data
 from springloading_insider_trades.sec_api.classes.Form4Filing import Form4Filing
 from springloading_insider_trades.sec_api.sec_api import get_filings
 
@@ -58,19 +58,13 @@ def run_daily():
         "2021-10-08", "2021-10-27"
     )  # get_filings(prev_start_date_string, prev_start_date_string)
 
-    for filing in filings:
-        import pprint
-
-        pprint.PrettyPrinter().pprint(filing.__dict__)
-
     # for filing in filings:
     #     insert_filing_data(filing)
 
     if error_urls:
-        # send email with errors (or save in DB)
-        print("error urls")
         for url in error_urls:
-            logger.info(f"Error URL -> {url}")
+            pass
+            # insert_error_url(url)
 
     logger.info(f"Found {len(filings)} final filings")
     logger.info(f"Found {len(error_urls)} errors")

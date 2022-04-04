@@ -17,5 +17,6 @@ SUPABASE: Client = create_client(_supabase_url, _supabase_api_key)
 SUPABASE_FILINGS_TABLE = "filings"
 SUPABASE_COMPANIES_TABLE = "companies"
 SUPABASE_TRANSACTIONS_TABLE = "transactions"
+SUPABASE_ERROR_URLS_TABLE = "error_urls"
 
 LOGGER_NAME = "springloading_insider_trades"

@@ -27,6 +27,9 @@ class Transaction:
         self.footnotes = footnotes
         self.filing_id = filing_id
 
+        # composite primary key for ensuring only unique items in db
+        self.id = date.isoformat() + str(num_shares) + str(num_shares_after)
+
     def get_share_pct_increase(self):
         return self.num_shares_after / self.num_shares - 1
 
@@ -136,6 +139,7 @@ class NonDerivTransaction(Transaction):
 
     def get_db_json(self):
         obj = {
+            "id": self.id,
             "date": self.date.isoformat(),
             "security_type": self.security_type,
             "code": self.code,
@@ -145,7 +149,7 @@ class NonDerivTransaction(Transaction):
             "acquired_disposed_code": self.acquired_disposed_code,
             "direct_or_indirect_ownership": self.direct_or_indirect_ownership,
             "footnotes": self.footnotes,
-            "filing": self.filing_id,
+            "filing_id": self.filing_id,
             "footnotes": self.footnotes,
             "transaction_type": self.transaction_type,
             "execution_date": self.execution_date.isoformat()
@@ -218,6 +222,7 @@ class DerivTransaction(Transaction):
 
     def get_db_json(self):
         obj = {
+            "id": self.id,
             "date": self.date.isoformat(),
             "security_type": self.security_type,
             "code": self.code,
@@ -227,7 +232,7 @@ class DerivTransaction(Transaction):
             "acquired_disposed_code": self.acquired_disposed_code,
             "direct_or_indirect_ownership": self.direct_or_indirect_ownership,
             "footnotes": self.footnotes,
-            "filing": self.filing_id,
+            "filing_id": self.filing_id,
             "footnotes": self.footnotes,
             "transaction_type": self.transaction_type,
             "exercise_price": self.exercise_price,

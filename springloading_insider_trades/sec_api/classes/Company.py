@@ -8,7 +8,7 @@ class Company:
     def from_issuer_xml(cls, xml):
         return cls(
             xml.issuercik.text if xml.issuercik else None,
-            xml.issuername.text if xml.issuerername else None,
+            xml.issuername.text if xml.issuername else None,
             xml.issuertradingsymbol.text if xml.issuertradingsymbol else None,
         )
 

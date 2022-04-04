@@ -74,5 +74,7 @@ def get_filings(start_date_string: str, end_date_string: str):
             form4_filings.append(form4Filing)
         else:
             error_urls.append(url)
+            print(f" URLS -> {error_urls}")
+            quit()
 
     return form4_filings, error_urls
