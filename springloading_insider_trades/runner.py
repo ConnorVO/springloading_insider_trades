@@ -1,13 +1,23 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+import pendulum as pdl
 import json
 import os
 import logging
 from typing import List
+import pprint
 
-from settings import LOGGER_NAME, SHOULD_SAVE_LOGS
+
+from settings import LOGGER_NAME, SEC_API_DATETIME_FORMAT, SHOULD_SAVE_LOGS
 from springloading_insider_trades.db.db import insert_error_url, insert_filing_data
+from springloading_insider_trades.email.email import send_error_urls_email
+from springloading_insider_trades.intrinio_api.get_prices_between_dates import (
+    get_prices_between_dates,
+)
 from springloading_insider_trades.sec_api.classes.Form4Filing import Form4Filing
-from springloading_insider_trades.sec_api.sec_api import get_filings
+from springloading_insider_trades.sec_api.sec_api import (
+    _get_form_4_filing_from_url,
+    get_filings,
+)
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -49,26 +59,179 @@ def run_daily():
         data = json.load(f)
         prev_start_date_string: str = data["prev_start_date_string"]
 
-    logger.info(f"Getting daily data for {prev_start_date_string}")
+    prev_date = datetime.strptime(prev_start_date_string, "%Y-%m-%d")
+    curr_date = prev_date + timedelta(days=1)
+    curr_date_str = datetime.strftime(curr_date, "%Y-%m-%d")
+
+    logger.info(f"Getting daily data for {curr_date_str}")
 
     filings: List[Form4Filing] = []
     error_urls: List[str] = []
     # THIS MUST RETURN LESS THAN 10,000 RESULTS OR SEC_API BREAKS. SO BREAK UP THE DATES IF YOU NEED MORE
-    filings, error_urls = get_filings(
-        "2021-10-08", "2021-10-27"
-    )  # get_filings(prev_start_date_string, prev_start_date_string)
+    filings, error_urls = get_filings(curr_date_str, curr_date_str)
 
-    # for filing in filings:
-    #     insert_filing_data(filing)
+    logger.info("Adding filings to DB")
+    for filing in filings:
+        insert_filing_data(filing)
 
+    logger.info("Adding Errors to DB")
     if error_urls:
         for url in error_urls:
-            pass
-            # insert_error_url(url)
+            insert_error_url(url)
+
+    logger.info(f"Sending Error Email for {len(error_urls)} errors")
+    send_error_urls_email()
+
+    logger.info("Writing date to local db")
+    with open("./data/local_db.json", "w", encoding="utf-8") as f:
+        obj = {
+            "prev_start_date_string": curr_date_str,
+        }
+        json.dump(obj, f, ensure_ascii=False, indent=4)
 
     logger.info(f"Found {len(filings)} final filings")
     logger.info(f"Found {len(error_urls)} errors")
     logger.info("Daily Finished")
+
+
+def run_between_dates():
+    """
+    Run with => pipenv run python3 -c 'import springloading_insider_trades.runner; springloading_insider_trades.runner.run_between_dates()'
+    """
+    program_start_date_string = "2020-10-01"
+    program_end_date_string = "2020-10-01"
+
+    _setup_logging("multi-day")
+    logger.info("Starting Between Dates")
+
+    # Break into chunks because SEC-API only returns up to 10k filings and there can be weird issues when we do more
+    day_delta: int = 3
+    start_date = datetime.strptime(program_start_date_string, "%Y-%m-%d")
+    stop_program_date = datetime.strptime(program_end_date_string, "%Y-%m-%d")
+    end_date = start_date + timedelta(
+        days=day_delta
+    )  # making it too many days causes a lot of SEC-API json issues
+
+    filings: List[Form4Filing] = []
+    error_urls: List[str] = []
+
+    while start_date <= stop_program_date:
+        logger.info(f"Getting filings for {start_date} - {end_date}")
+        # don't want to get data past the stop_program date
+        if end_date > stop_program_date:
+            end_date = stop_program_date
+
+        # THIS MUST RETURN LESS THAN 10,000 RESULTS OR SEC_API BREAKS. SO BREAK UP THE DATES IF YOU NEED MORE
+        filings_data = get_filings(
+            start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
+        )
+        filings.extend(filings_data[0])
+        error_urls.extend(filings_data[1])
+
+        # update the start and end dates to get the next chunk
+        start_date = end_date + timedelta(days=1)
+        end_date = start_date + timedelta(days=day_delta)
+
+    logger.info("Adding filings to DB")
+    for filing in filings:
+        try:
+            insert_filing_data(filing)
+        except Exception as e:
+            logger.error(
+                f"Error inserting filings into db\nFiling: {filing.__dict__}\nError: {e}"
+            )
+
+    logger.info("Adding Errors to DB")
+    if error_urls:
+        for url in error_urls:
+            logger.info(f"ERROR URL -> {url}")
+            try:
+                insert_error_url(url)
+            except Exception as e:
+                logger.error(
+                    f"Error inserting error url into db\Error Url: {url}\nError: {e}"
+                )
+
+    logger.info(f"Found {len(filings)} final filings")
+    logger.info(f"Found {len(error_urls)} errors")
+    logger.info("Between Dates Finished")
+
+
+def run_intrinio_prices():
+    """
+    Run with => pipenv run python3 -c 'import springloading_insider_trades.runner; springloading_insider_trades.runner.run_intrinio_prices()'
+    """
+    _setup_logging("run_intrinio_prices")
+    logger.info("Starting Intrinio Prices")
+
+    # Get Date strings
+    ## - 1 day ago string
+    ## - 90 day ago string
+    now = pdl.now("America/Indianapolis")
+    one_day_ago_string = now.subtract(days=1).to_date_string()
+    ninety_days_ago_string = now.subtract(days=90).to_date_string()
+
+    # Get filings from supabase older than 1 day and 90 days
+    ## Get tickers
+
+    # Get and update prices for those filings from intrinio
+    # stock_prices = get_prices_between_dates("AAPL", start_date="2021-01-01", end_date="2022-01-01")
+
+
+def seed_db():
+    """Seed DB with older than 90 days, exactly 90 days, earlier than 90 days, exactly 1 day, and earlier than 1 day
+
+    Run with => pipenv run python3 -c 'import springloading_insider_trades.runner; springloading_insider_trades.runner.seed_db()'
+    """
+    now = pdl.now("America/Indianapolis")
+    now_string = now.to_date_string()
+    one_day_ago_string = now.subtract(days=1).to_date_string()
+    thirty_day_ago_string = now.subtract(days=30).to_date_string()
+    ninety_days_ago_string = now.subtract(days=90).to_date_string()
+    hundred_days_ago_string = now.subtract(days=100).to_date_string()
+
+    now_filings, now_error_urls = get_filings(now_string, now_string, size=3)
+    one_day_ago_filings, one_day_ago_error_urls = get_filings(
+        one_day_ago_string, one_day_ago_string, size=3
+    )
+    thirty_day_ago_filings, thirty_day_ago_error_urls = get_filings(
+        thirty_day_ago_string, thirty_day_ago_string, size=3
+    )
+    ninety_days_ago_filings, ninety_days_ago_error_urls = get_filings(
+        ninety_days_ago_string, ninety_days_ago_string, size=3
+    )
+    hundred_days_ago_filings, hundred_days_ago_error_urls = get_filings(
+        hundred_days_ago_string, hundred_days_ago_string, size=3
+    )
+
+    all_filings = (
+        now_filings
+        + one_day_ago_filings
+        + thirty_day_ago_filings
+        + ninety_days_ago_filings
+        + hundred_days_ago_filings
+    )
+    all_errors = (
+        now_error_urls
+        + one_day_ago_error_urls
+        + thirty_day_ago_error_urls
+        + ninety_days_ago_error_urls
+        + hundred_days_ago_error_urls
+    )
+
+    logger.info("Adding filings to DB")
+    for filing in all_filings:
+        try:
+            insert_filing_data(filing)
+        except Exception as e:
+            logger.error(
+                f"Error inserting filings into db\nFiling: {filing.__dict__}\nError: {e}"
+            )
+
+    logger.info(f"Found {len(all_filings)} final filings")
+    logger.info(f"Found {len(all_errors)} errors")
+
+    pprint.PrettyPrinter().pprint(f"Errors: {all_errors}")
 
 
 def test():
@@ -77,5 +240,22 @@ def test():
     """
     _setup_logging("test")
     logger.info("Starting Test")
-    print("Testing")
+
+    form4_filing = _get_form_4_filing_from_url(
+        (
+            datetime.strptime("2022-02-23", "%Y-%m-%d"),
+            "https://www.sec.gov/Archives/edgar/data/1397702/000159396822000213/xslF345X03/primary_01.xml",
+            # "https://www.sec.gov/Archives/edgar/data/1114995/000124636019002198/xslF345X03/form.xml",
+        )
+    )
+
+    try:
+        insert_filing_data(form4_filing)
+    except Exception as e:
+        logger.error(
+            f"Error inserting filings into db\nFiling: {form4_filing.__dict__}\nError: {e}"
+        )
+
+    # pprint.PrettyPrinter().pprint(form4_filing.__dict__)
+
     logger.info("Test Finished")

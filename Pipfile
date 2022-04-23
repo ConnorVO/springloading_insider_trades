@@ -12,6 +12,8 @@ sec-api = "*"
 python-dotenv = "*"
 supabase = "*"
 pytest = "*"
+intrinio-sdk = "*"
+pendulum = "*"
 
 [dev-packages]
 black = "*"

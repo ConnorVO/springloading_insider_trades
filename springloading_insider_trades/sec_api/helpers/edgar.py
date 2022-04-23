@@ -30,8 +30,3 @@ def get_xml_url(url: str) -> str:
     split_url.pop()
 
     return "/".join(split_url) + "/" + last_url_item
-
-
-get_xml_url(
-    "https://www.sec.gov/Archives/edgar/data/1060736/000089924321034984/xslF345X03/doc4.xml"
-)

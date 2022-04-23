@@ -155,6 +155,12 @@ class NonDerivTransaction(Transaction):
             "execution_date": self.execution_date.isoformat()
             if self.execution_date
             else None,
+            # must mark missing as None because Supabase doesn't let you upload different types in one insert
+            "exercise_price": None,
+            "exercise_date": None,
+            "expiration_date": None,
+            "underlying_security_type": None,
+            "underlying_security_num_shares": None,
         }
 
         return obj
@@ -244,6 +250,8 @@ class DerivTransaction(Transaction):
             else None,
             "underlying_security_type": self.underlying_security_type,
             "underlying_security_num_shares": self.underlying_security_num_shares,
+            # must mark missing as None because Supabase doesn't let you upload different types in one insert
+            "execution_date": None,
         }
 
         return obj

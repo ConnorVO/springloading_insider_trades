@@ -47,7 +47,7 @@ def insert_filing_data(filing: Form4Filing) -> bool:
             .insert(filing.company.get_db_json())
             .execute()
         )
-        logger.info(f"Inserting Company: {company_res}")
+        logger.info(f"Inserting Company: {company_res.data[0]['cik']}")
         if not company_res.data:
             logger.error(f"Couldn't insert company\n{filing.company.__dict__}")
             return False
@@ -60,7 +60,7 @@ def insert_filing_data(filing: Form4Filing) -> bool:
             .insert(filing.get_db_json())
             .execute()
         )
-        logger.info(f"Inserting Filing: {filing_res}")
+        logger.info(f"Inserting Filing: {filing_res.data[0]['id']}")
         if not filing_res.data:
             logger.error(f"Couldn't insert filing\n{filing.__dict__}")
             return False
@@ -68,14 +68,15 @@ def insert_filing_data(filing: Form4Filing) -> bool:
     # create the transactions that reference the filing
     # does_transaction_exist = _does_transaction_exist()
     # only insert if filing has been created
-    # NOTE: DO THIS. IT ISN'T INSERTING
     if not does_filing_exist:
         transactions_res = (
             SUPABASE.table(SUPABASE_TRANSACTIONS_TABLE)
             .insert([t.get_db_json() for t in filing.get_all_transactions()])
             .execute()
         )
-        logger.info(f"Inserting Transactions: {transactions_res}")
+        logger.info(
+            f"Inserting Transactions: {[t['id'] for t in transactions_res.data]}"
+        )
         if not transactions_res.data:
             logger.error(
                 f"Couldn't insert transactions\n{[t.__dict__ for t in filing.get_all_transactions()]}"

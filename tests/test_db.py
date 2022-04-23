@@ -34,10 +34,15 @@ class TestDB:
             filing is not None
         ), "Form4Filing is None while running test_xml_timestamp"
 
-        is_inserted = insert_filing_data(filing)
-        assert (
-            is_inserted
-        ), f"Form4Filing {filing.id} not inserted while running test_xml_timestamp"
+        try:
+            is_inserted = insert_filing_data(filing)
+            assert (
+                is_inserted
+            ), f"Form4Filing {filing.id} not inserted while running test_xml_timestamp"
+        except Exception as e:
+            assert (
+                False
+            ), f"Form4Filing {filing.id} not inserted while running test_xml_timestamp"
 
         is_filing_deleted = delete_filing(filing)
         assert (
@@ -50,8 +55,29 @@ class TestDB:
         #     is_company_deleted
         # ), f"Company {filing.company.cik} not deleted while running test_xml_timestamp"
 
-    def test_all_nulls_xml(self):
-        pass
+    def test_xml_deriv_and_nonderiv(self):
+        with open("./tests/xml/xml_deriv_and_nonderiv.xml", "r") as f:
+            xml = f.read()
+
+        filing, _ = self._conv_xml(xml)
+        assert (
+            filing is not None
+        ), "Form4Filing is None while running test_xml_deriv_and_nonderiv"
+
+        try:
+            is_inserted = insert_filing_data(filing)
+            assert (
+                is_inserted
+            ), f"Form4Filing {filing.id} not inserted while running test_xml_deriv_and_nonderiv"
+        except Exception as e:
+            assert (
+                False
+            ), f"Form4Filing {filing.id} not inserted while running test_xml_deriv_and_nonderiv"
+
+        is_filing_deleted = delete_filing(filing)
+        assert (
+            is_filing_deleted
+        ), f"Form4Filing {filing.id} not deleted while running test_xml_deriv_and_nonderiv"
 
     def test_error_xml(self):
         with open("./tests/xml/xml_error.xml", "r") as f:

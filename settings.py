@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import intrinio_sdk as intrinio
 from sec_api import QueryApi
 from supabase import create_client, Client
 
@@ -20,3 +21,8 @@ SUPABASE_TRANSACTIONS_TABLE = "transactions"
 SUPABASE_ERROR_URLS_TABLE = "error_urls"
 
 LOGGER_NAME = "springloading_insider_trades"
+
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+
+intrinio.ApiClient().set_api_key(os.getenv("INTRINIO_API_KEY"))
+intrinio.ApiClient().allow_retries(True)

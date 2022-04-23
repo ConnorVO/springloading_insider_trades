@@ -1,0 +1,191 @@
+<ownershipDocument>
+<script> try { Object.defineProperty(navigator, "globalPrivacyControl", { value: false, configurable: false, writable: false }); document.currentScript.parentElement.removeChild(document.currentScript); } catch(e) {}; </script>
+<schemaVersion>X0306</schemaVersion>
+<documentType>4</documentType>
+<periodOfReport>2022-01-11</periodOfReport>
+<issuer>
+<issuerCik>0001397702</issuerCik>
+<issuerName>Silk Road Medical Inc</issuerName>
+<issuerTradingSymbol>SILK</issuerTradingSymbol>
+</issuer>
+<reportingOwner>
+<reportingOwnerId>
+<rptOwnerCik>0001769940</rptOwnerCik>
+<rptOwnerName>Rogers Erica J.</rptOwnerName>
+</reportingOwnerId>
+<reportingOwnerAddress>
+<rptOwnerStreet1>C/O SILK ROAD MEDICAL, INC.</rptOwnerStreet1>
+<rptOwnerStreet2>1213 INNSBRUCK DRIVE</rptOwnerStreet2>
+<rptOwnerCity>SUNNYVALE</rptOwnerCity>
+<rptOwnerState>CA</rptOwnerState>
+<rptOwnerZipCode>94089</rptOwnerZipCode>
+<rptOwnerStateDescription/>
+</reportingOwnerAddress>
+<reportingOwnerRelationship>
+<isDirector>true</isDirector>
+<isOfficer>true</isOfficer>
+<isTenPercentOwner>false</isTenPercentOwner>
+<isOther>false</isOther>
+<officerTitle>President and CEO</officerTitle>
+<otherText/>
+</reportingOwnerRelationship>
+</reportingOwner>
+<nonDerivativeTable>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2022-01-11</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>M</transactionCode>
+<equitySwapInvolved>false</equitySwapInvolved>
+<footnoteId id="F1"/>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>10000</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>1.6</value>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>A</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>142179</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeTransaction>
+<securityTitle>
+<value>Common Stock</value>
+</securityTitle>
+<transactionDate>
+<value>2022-01-11</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>S</transactionCode>
+<equitySwapInvolved>false</equitySwapInvolved>
+<footnoteId id="F1"/>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>10000</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>41.8787</value>
+<footnoteId id="F2"/>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>132179</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</nonDerivativeTransaction>
+<nonDerivativeHolding>
+<securityTitle>
+<value>Common Stock</value>
+</securityTitle>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>83843</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>I</value>
+</directOrIndirectOwnership>
+<natureOfOwnership>
+<value>Trustees of The Surace/Rogers Family Trust</value>
+<footnoteId id="F3"/>
+</natureOfOwnership>
+</ownershipNature>
+</nonDerivativeHolding>
+</nonDerivativeTable>
+<derivativeTable>
+<derivativeTransaction>
+<securityTitle>
+<value>Option (right to buy)</value>
+</securityTitle>
+<conversionOrExercisePrice>
+<value>1.60</value>
+</conversionOrExercisePrice>
+<transactionDate>
+<value>2022-01-11</value>
+</transactionDate>
+<transactionCoding>
+<transactionFormType>4</transactionFormType>
+<transactionCode>M</transactionCode>
+<equitySwapInvolved>false</equitySwapInvolved>
+<footnoteId id="F1"/>
+</transactionCoding>
+<transactionAmounts>
+<transactionShares>
+<value>10000</value>
+</transactionShares>
+<transactionPricePerShare>
+<value>0</value>
+</transactionPricePerShare>
+<transactionAcquiredDisposedCode>
+<value>D</value>
+</transactionAcquiredDisposedCode>
+</transactionAmounts>
+<exerciseDate>
+<value>2016-09-04</value>
+<footnoteId id="F4"/>
+</exerciseDate>
+<expirationDate>
+<value>2026-08-04</value>
+</expirationDate>
+<underlyingSecurity>
+<underlyingSecurityTitle>
+<value>Common Stock</value>
+</underlyingSecurityTitle>
+<underlyingSecurityShares>
+<value>10000</value>
+</underlyingSecurityShares>
+</underlyingSecurity>
+<postTransactionAmounts>
+<sharesOwnedFollowingTransaction>
+<value>152654</value>
+</sharesOwnedFollowingTransaction>
+</postTransactionAmounts>
+<ownershipNature>
+<directOrIndirectOwnership>
+<value>D</value>
+</directOrIndirectOwnership>
+</ownershipNature>
+</derivativeTransaction>
+</derivativeTable>
+<footnotes>
+<footnote id="F1">The option exercise and sale reported on this Form 4 were effected pursuant to Rule 10b5-1 Trading Plan adopted by the reporting person on August 20, 2021.</footnote>
+<footnote id="F2">This transaction was executed in multiple trades at price ranging from $40.03 to $42.75. The price reported above reflects the weighted average sale price. The Reporting Person hereby undertakes to provide upon request to the SEC staff, the issuer or a security holder of the issuer full information regarding the number of shares and prices at which the transaction was effected.</footnote>
+<footnote id="F3">These shares are held directly by Kevin J. Surace and Erica J. Rogers, as Trustees of The Surace Rogers Family Trust.</footnote>
+<footnote id="F4">All of the shares subject to this option are fully vested and exercisable as of the date hereof.</footnote>
+</footnotes>
+<remarks/>
+<ownerSignature>
+<signatureName>/s/Mhairi Jones, by power of attorney</signatureName>
+<signatureDate>2022-01-13</signatureDate>
+</ownerSignature>
+</ownershipDocument>
