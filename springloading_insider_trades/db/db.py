@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 from settings import (
     LOGGER_NAME,
@@ -6,6 +7,7 @@ from settings import (
     SUPABASE_COMPANIES_TABLE,
     SUPABASE_ERROR_URLS_TABLE,
     SUPABASE_FILINGS_TABLE,
+    SUPABASE_PRICES_TABLE,
     SUPABASE_TRANSACTIONS_TABLE,
 )
 from springloading_insider_trades.sec_api.classes.Company import Company
@@ -106,10 +108,39 @@ def insert_error_url(url: str):
         )
         logger.info(f"Inserting Error Url: {error_res}")
         if not error_res.data:
-            logger.error(f"Couldn't insert error url\n{url}")
+            logger.exception(f"Couldn't insert error url\n{url}")
             return False
 
     return True
+
+
+def insert_price_data(price_data: List[object]):
+    for data in price_data:
+        try:
+            prices_res = (
+                SUPABASE.table(SUPABASE_PRICES_TABLE)
+                .insert(
+                    {
+                        "open": data["stock_prices"]["open"],
+                        "90_day": data["stock_prices"]["90_day"],
+                    }
+                )
+                .execute()
+            )
+
+            filings_res = (
+                SUPABASE.table(SUPABASE_FILINGS_TABLE)
+                .update(
+                    {
+                        "prices_id": prices_res.data[0]["id"],
+                    }
+                )
+                .filter("id", "eq", data["filing_id"])  # .eq doesn't work
+                .execute()
+            )
+            logger.info(f'Updated prices for filing ID {data["filing_id"]}')
+        except Exception as e:
+            logger.exception(e)
 
 
 def delete_filing(filing: Form4Filing) -> bool:
@@ -142,6 +173,27 @@ def delete_error_url(url: str) -> bool:
         return False
 
     return True
+
+
+def get_filings_for_prices(now_date: str):
+    try:
+        filing_res = (
+            # SUPABASE.table(SUPABASE_FILINGS_TABLE)
+            # .select("*, companies (ticker)")
+            # .filter("prices", "is", "null")
+            # .filter("filing_date", "lt", now_date)
+            # .execute()
+            SUPABASE.rpc(
+                "get_filings_for_adding_prices",
+                {"date_input": now_date},
+            )
+        )
+        return filing_res.json()
+    except Exception as e:
+        logger.exception(e)
+
+    # returning empty list because we do same behavior if we don't have any data or there is an error
+    return []
 
 
 ## NOTE: Shouldn't ever really need to delete company because it is referenced by multiple filings

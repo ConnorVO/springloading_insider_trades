@@ -19,6 +19,7 @@ SUPABASE_FILINGS_TABLE = "filings"
 SUPABASE_COMPANIES_TABLE = "companies"
 SUPABASE_TRANSACTIONS_TABLE = "transactions"
 SUPABASE_ERROR_URLS_TABLE = "error_urls"
+SUPABASE_PRICES_TABLE = "prices"
 
 LOGGER_NAME = "springloading_insider_trades"
 

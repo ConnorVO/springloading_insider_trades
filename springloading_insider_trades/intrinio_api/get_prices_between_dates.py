@@ -20,7 +20,7 @@ def get_prices_between_dates(
     page_size: int = 100,
     next_page: str = "",
     stock_prices: List[StockPriceSummary] = None,
-) -> Union[List[StockPriceSummary], None]:
+) -> List[StockPriceSummary]:
     if not stock_prices:
         stock_prices = []
 
@@ -47,10 +47,9 @@ def get_prices_between_dates(
                 next_page=response.next_page,
                 stock_prices=stock_prices,
             )
-
-        return stock_prices
     except ApiException as e:
         logger.error(
             "Exception when calling SecurityApi->get_security_intraday_prices: %s\n" % e
         )
-        return None
+
+    return stock_prices

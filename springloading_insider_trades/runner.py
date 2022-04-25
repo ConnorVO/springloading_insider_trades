@@ -7,8 +7,19 @@ from typing import List
 import pprint
 
 
-from settings import LOGGER_NAME, SEC_API_DATETIME_FORMAT, SHOULD_SAVE_LOGS
-from springloading_insider_trades.db.db import insert_error_url, insert_filing_data
+from settings import (
+    LOGGER_NAME,
+    SEC_API_DATETIME_FORMAT,
+    SHOULD_SAVE_LOGS,
+    SUPABASE,
+    SUPABASE_FILINGS_TABLE,
+)
+from springloading_insider_trades.db.db import (
+    get_filings_for_prices,
+    insert_error_url,
+    insert_filing_data,
+    insert_price_data,
+)
 from springloading_insider_trades.email.email import send_error_urls_email
 from springloading_insider_trades.intrinio_api.get_prices_between_dates import (
     get_prices_between_dates,
@@ -168,14 +179,52 @@ def run_intrinio_prices():
     ## - 1 day ago string
     ## - 90 day ago string
     now = pdl.now("America/Indianapolis")
-    one_day_ago_string = now.subtract(days=1).to_date_string()
-    ninety_days_ago_string = now.subtract(days=90).to_date_string()
-
+    now_string = now.to_date_string()
     # Get filings from supabase older than 1 day and 90 days
     ## Get tickers
+    filings = get_filings_for_prices(now_string)
 
     # Get and update prices for those filings from intrinio
     # stock_prices = get_prices_between_dates("AAPL", start_date="2021-01-01", end_date="2022-01-01")
+
+    ### Get the closest price AFTER given date
+    stock_price_data = []
+    for filing in filings:
+        date = pdl.parse(filing["filing_date"], tz="America/Indianapolis")
+        next_day_date = date.add(days=1)
+        ninety_day_date = date.add(days=90)
+        # could be a weekend or market is closed, so need to get the next closest price
+        next_day_buffer = next_day_date.add(days=5)
+        ninety_day_buffer_string = ninety_day_date.add(days=5)
+        next_day_price_data = get_prices_between_dates(
+            filing["ticker"],
+            next_day_date.to_date_string(),
+            next_day_buffer.to_date_string(),
+        )
+        ninety_day_price_data = get_prices_between_dates(
+            filing["ticker"],
+            ninety_day_date.to_date_string(),
+            ninety_day_buffer_string.to_date_string(),
+        )
+
+        if not next_day_price_data and not ninety_day_price_data:
+            continue
+
+        stock_price_data.append(
+            {
+                "filing_id": filing["filing_id"],
+                "stock_prices": {
+                    "open": next_day_price_data[-1].open
+                    if next_day_price_data
+                    else None,
+                    "90_day": ninety_day_price_data[-1].close
+                    if ninety_day_price_data
+                    else None,
+                },
+            }
+        )
+
+    insert_price_data(stock_price_data)
 
 
 def seed_db():
@@ -241,20 +290,29 @@ def test():
     _setup_logging("test")
     logger.info("Starting Test")
 
-    form4_filing = _get_form_4_filing_from_url(
-        (
-            datetime.strptime("2022-02-23", "%Y-%m-%d"),
-            "https://www.sec.gov/Archives/edgar/data/1397702/000159396822000213/xslF345X03/primary_01.xml",
-            # "https://www.sec.gov/Archives/edgar/data/1114995/000124636019002198/xslF345X03/form.xml",
-        )
-    )
+    ## TEST UPDATE
+    # res = (
+    #     SUPABASE.table(SUPABASE_FILINGS_TABLE)
+    #     .update({"prices_id": 25})
+    #     .filter("id", "eq", "00013977022022-01-13T18:55:11-05:000001769940") # .eq doesn't work
+    #     .execute()
+    # )
 
-    try:
-        insert_filing_data(form4_filing)
-    except Exception as e:
-        logger.error(
-            f"Error inserting filings into db\nFiling: {form4_filing.__dict__}\nError: {e}"
-        )
+    ## TEST INSERTING FORM 4
+    # form4_filing = _get_form_4_filing_from_url(
+    #     (
+    #         datetime.strptime("2022-02-23", "%Y-%m-%d"),
+    #         "https://www.sec.gov/Archives/edgar/data/1397702/000159396822000213/xslF345X03/primary_01.xml",
+    #         # "https://www.sec.gov/Archives/edgar/data/1114995/000124636019002198/xslF345X03/form.xml",
+    #     )
+    # )
+
+    # try:
+    #     insert_filing_data(form4_filing)
+    # except Exception as e:
+    #     logger.error(
+    #         f"Error inserting filings into db\nFiling: {form4_filing.__dict__}\nError: {e}"
+    #     )
 
     # pprint.PrettyPrinter().pprint(form4_filing.__dict__)
 
