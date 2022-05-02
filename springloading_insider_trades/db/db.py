@@ -6,6 +6,7 @@ from settings import (
     SUPABASE,
     SUPABASE_COMPANIES_TABLE,
     SUPABASE_ERROR_URLS_TABLE,
+    SUPABASE_EXECS_TABLE,
     SUPABASE_FILINGS_TABLE,
     SUPABASE_PRICES_TABLE,
     SUPABASE_TRANSACTIONS_TABLE,
@@ -14,6 +15,72 @@ from springloading_insider_trades.sec_api.classes.Company import Company
 from springloading_insider_trades.sec_api.classes.Form4Filing import Form4Filing
 
 logger = logging.getLogger(LOGGER_NAME)
+
+
+def _update_exec_data(data: object):
+    if not data["stock_prices"]["90_day"] or not data["stock_prices"]["open"]:
+        # there is nothing to update unless is 90_day data
+        return None
+
+    exec_get_res = (
+        SUPABASE.table(SUPABASE_EXECS_TABLE)
+        .select("*")
+        .filter("cik", "eq", data["owner_cik"])
+        .execute()
+    )
+    # Current Data
+    exec_num_trades = (
+        exec_get_res.data[0]["num_trades"] if exec_get_res.data[0]["num_trades"] else 0
+    )
+    ninety_day_return = exec_get_res.data[0]["ninety_day_return"]
+    num_correct = (
+        exec_get_res.data[0]["num_correct"]
+        if exec_get_res.data[0]["num_correct"]
+        else 0
+    )
+    # Update the data
+    if ninety_day_return or ninety_day_return == 0:
+        if exec_num_trades == 0:
+            ninety_day_return = (
+                data["stock_prices"]["90_day"] / data["stock_prices"]["open"] - 1
+            )
+        else:
+            ninety_day_return = (
+                ninety_day_return * exec_num_trades
+                + (data["stock_prices"]["90_day"] / data["stock_prices"]["open"] - 1)
+            ) / (exec_num_trades + 1)
+
+    if not ninety_day_return:
+        ninety_day_return = (
+            data["stock_prices"]["90_day"] / data["stock_prices"]["open"] - 1
+        )
+
+    if data["stock_prices"]["90_day"] / data["stock_prices"]["open"] - 1 > 0:
+        num_correct += 1
+    # if exec_num_trades > 0:
+    #     ninety_day_return = (
+    #         ninety_day_return * exec_num_trades
+    #         + (data["stock_prices"]["90_day"] / data["stock_prices"]["open"] - 1)
+    #     ) / (exec_num_trades + 1)
+
+    #     if data["stock_prices"]["90_day"] / data["stock_prices"]["open"] - 1 > 0:
+    #         num_correct += 1
+    # else:
+    #     ninety_day_return =  (data["stock_prices"]["90_day"] / data["stock_prices"]["open"] - 1)
+
+    update_data = {
+        "num_trades": exec_num_trades + 1,
+        "ninety_day_return": ninety_day_return,
+        "num_correct": num_correct,
+    }
+    exec_update_res = (
+        SUPABASE.table(SUPABASE_EXECS_TABLE)
+        .update(update_data)
+        .filter("cik", "eq", data["owner_cik"])
+        .execute()
+    )  # .eq doesn't work)
+
+    return exec_update_res
 
 
 def _does_company_exist(cik: str) -> bool:
@@ -42,17 +109,26 @@ def _does_transaction_exist(id: str) -> bool:
 
 def insert_filing_data(filing: Form4Filing) -> bool:
     # Create company if it doesn't exist
-    does_company_exist = _does_company_exist(filing.company.cik)
-    if not does_company_exist:
-        company_res = (
-            SUPABASE.table(SUPABASE_COMPANIES_TABLE)
-            .insert(filing.company.get_db_json())
-            .execute()
-        )
-        logger.info(f"Inserting Company: {company_res.data[0]['cik']}")
-        if not company_res.data:
-            logger.error(f"Couldn't insert company\n{filing.company.__dict__}")
-            return False
+    # does_company_exist = _does_company_exist(filing.company.cik)
+    # if not does_company_exist:
+    company_res = (
+        SUPABASE.table(SUPABASE_COMPANIES_TABLE)
+        .upsert(filing.company.get_db_json())
+        .execute()
+    )
+    logger.info(f"Upserting Company: {company_res.data[0]['cik']}")
+    if not company_res.data:
+        logger.error(f"Couldn't upsert company\n{filing.company.__dict__}")
+        return False
+
+    # Create Exec
+    exec_res = (
+        SUPABASE.table(SUPABASE_EXECS_TABLE).upsert(filing.exec.get_db_json()).execute()
+    )
+    logger.info(f"Upserting Exec: {exec_res.data[0]['cik']}")
+    if not exec_res.data:
+        logger.error(f"Couldn't upsert Exec\n{filing.exec,__dict__}")
+        return False
 
     # Create filing that references company
     does_filing_exist = _does_filing_exist(filing.id)
@@ -138,6 +214,9 @@ def insert_price_data(price_data: List[object]):
                 .filter("id", "eq", data["filing_id"])  # .eq doesn't work
                 .execute()
             )
+
+            _update_exec_data(data)
+
             logger.info(f'Updated prices for filing ID {data["filing_id"]}')
         except Exception as e:
             logger.exception(e)
@@ -153,6 +232,22 @@ def delete_filing(filing: Form4Filing) -> bool:
     logger.info(f"Deleting Filing (id: {filing.id}): {filing_res}")
     if not filing_res.data:
         logger.error(f"Couldn't delete filing (id: {filing.id} from db")
+        return False
+
+    return True
+
+
+def delete_exec(owner_cik: int):
+    exec_res = (
+        SUPABASE.table(SUPABASE_EXECS_TABLE)
+        .delete()
+        .match({"cik": owner_cik})
+        .execute()
+    )
+
+    logger.info(f"Deleting Exec (cik: {owner_cik}): {exec_res}")
+    if not exec_res.data:
+        logger.error(f"Couldn't delete Exec (cik: {owner_cik} from db")
         return False
 
     return True
@@ -184,7 +279,7 @@ def get_filings_for_prices(now_date: str):
             # .filter("filing_date", "lt", now_date)
             # .execute()
             SUPABASE.rpc(
-                "get_filings_for_adding_prices",
+                "get_purchase_filings_for_adding_prices",
                 {"date_input": now_date},
             )
         )

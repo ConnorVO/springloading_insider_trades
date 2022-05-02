@@ -3,6 +3,7 @@ from typing import Tuple, Union
 from springloading_insider_trades.db.db import (
     # delete_company,
     delete_error_url,
+    delete_exec,
     delete_filing,
     insert_error_url,
     insert_filing_data,
@@ -49,6 +50,8 @@ class TestDB:
             is_filing_deleted
         ), f"Form4Filing {filing.id} not deleted while running test_xml_timestamp"
 
+        delete_exec(filing.owner_cik)
+
         ## NOTE: DO NOT DELETE COMPANY BECAUSE IT MAY BE REFERENCED BY LIVE FILINGS
         # is_company_deleted = delete_company(filing.company)
         # assert (
@@ -78,6 +81,8 @@ class TestDB:
         assert (
             is_filing_deleted
         ), f"Form4Filing {filing.id} not deleted while running test_xml_deriv_and_nonderiv"
+
+        delete_exec(filing.owner_cik)
 
     def test_error_xml(self):
         with open("./tests/xml/xml_error.xml", "r") as f:

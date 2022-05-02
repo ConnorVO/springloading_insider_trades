@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import List
 
+from springloading_insider_trades.sec_api.classes.Exec import Exec
+
 from .Company import Company
 from .Transaction import NonDerivTransaction, DerivTransaction
 
@@ -14,6 +16,7 @@ class Form4Filing:
         filing_date: datetime,
         owner_name: str,
         owner_cik: str,
+        exec: Exec,
         is_director: bool,
         is_officer: bool,
         is_ten_percent_owner: bool,
@@ -28,6 +31,7 @@ class Form4Filing:
         self.filing_date = filing_date
         self.owner_name = owner_name
         self.owner_cik = owner_cik
+        self.exec = exec
         self.is_director = is_director
         self.is_officer = is_officer
         self.is_ten_percent_owner = is_ten_percent_owner
@@ -52,6 +56,7 @@ class Form4Filing:
         xml_reporting_owner = xml.find("reportingowner")
         owner_cik: str = xml_reporting_owner.reportingownerid.rptownercik.text
         owner_name: str = xml_reporting_owner.reportingownerid.rptownername.text
+        exec: Exec = Exec(owner_cik, owner_name)
         is_director: bool = (
             True
             if xml_reporting_owner.reportingownerrelationship
@@ -130,6 +135,7 @@ class Form4Filing:
             filing_date,
             owner_name,
             owner_cik,
+            exec,
             is_director,
             is_officer,
             is_ten_percent_owner,
@@ -148,6 +154,7 @@ class Form4Filing:
             "filing_date": self.filing_date.isoformat(),
             "owner_name": self.owner_name,
             "owner_cik": self.owner_cik,
+            "exec_id": self.owner_cik,
             "is_director": self.is_director,
             "is_officer": self.is_officer,
             "is_ten_percent_owner": self.is_ten_percent_owner,

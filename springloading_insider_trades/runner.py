@@ -12,6 +12,7 @@ from settings import (
     SEC_API_DATETIME_FORMAT,
     SHOULD_SAVE_LOGS,
     SUPABASE,
+    SUPABASE_EXECS_TABLE,
     SUPABASE_FILINGS_TABLE,
 )
 from springloading_insider_trades.db.db import (
@@ -109,22 +110,32 @@ def run_between_dates():
     """
     Run with => pipenv run python3 -c 'import springloading_insider_trades.runner; springloading_insider_trades.runner.run_between_dates()'
     """
-    program_start_date_string = "2020-10-01"
-    program_end_date_string = "2020-10-01"
+    # get dates from local json
+    program_start_date_string = ""
+    program_end_date_string = datetime.now().strftime("%Y-%m-%d")
+
+    filepath = "data/local_db.json"
+    with open(filepath, "r") as f:
+        data = json.load(f)
+        program_start_date_string = data["next_start_date_string"]
+
+    ## overwrite dates if you want
+    # program_start_date_string = "2017-01-04"
+    # program_stop_date_string = "" # this is the very end of all the loops
 
     _setup_logging("multi-day")
     logger.info("Starting Between Dates")
 
     # Break into chunks because SEC-API only returns up to 10k filings and there can be weird issues when we do more
-    day_delta: int = 3
+    day_delta: int = 2
     start_date = datetime.strptime(program_start_date_string, "%Y-%m-%d")
     stop_program_date = datetime.strptime(program_end_date_string, "%Y-%m-%d")
     end_date = start_date + timedelta(
         days=day_delta
     )  # making it too many days causes a lot of SEC-API json issues
 
-    filings: List[Form4Filing] = []
-    error_urls: List[str] = []
+    num_filings: int = 0
+    num_erros: int = 0
 
     while start_date <= stop_program_date:
         logger.info(f"Getting filings for {start_date} - {end_date}")
@@ -136,32 +147,48 @@ def run_between_dates():
         filings_data = get_filings(
             start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
         )
-        filings.extend(filings_data[0])
-        error_urls.extend(filings_data[1])
+        filings = filings_data[0]
+        num_filings += len(filings)
+        error_urls = filings_data[1]
+        num_errors += len(error_urls)
+
+        logger.info("Adding filings to DB")
+        for filing in filings:
+            try:
+                insert_filing_data(filing)
+            except Exception as e:
+                logger.error(
+                    f"Error inserting filings into db\nFiling: {filing.__dict__}\nError: {e}"
+                )
+
+        logger.info("Adding Errors to DB")
+        if error_urls:
+            for url in error_urls:
+                logger.info(f"ERROR URL -> {url}")
+                try:
+                    insert_error_url(url)
+                except Exception as e:
+                    logger.error(
+                        f"Error inserting error url into db\Error Url: {url}\nError: {e}"
+                    )
+
+        logger.info("Updating program date in local db")
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(
+                {
+                    "next_start_date_string": (
+                        start_date + timedelta(days=day_delta)
+                    ).strftime("%Y-%m-%d")
+                },
+                f,
+                ensure_ascii=False,
+                indent=4,
+                default=str,
+            )
 
         # update the start and end dates to get the next chunk
         start_date = end_date + timedelta(days=1)
         end_date = start_date + timedelta(days=day_delta)
-
-    logger.info("Adding filings to DB")
-    for filing in filings:
-        try:
-            insert_filing_data(filing)
-        except Exception as e:
-            logger.error(
-                f"Error inserting filings into db\nFiling: {filing.__dict__}\nError: {e}"
-            )
-
-    logger.info("Adding Errors to DB")
-    if error_urls:
-        for url in error_urls:
-            logger.info(f"ERROR URL -> {url}")
-            try:
-                insert_error_url(url)
-            except Exception as e:
-                logger.error(
-                    f"Error inserting error url into db\Error Url: {url}\nError: {e}"
-                )
 
     logger.info(f"Found {len(filings)} final filings")
     logger.info(f"Found {len(error_urls)} errors")
@@ -213,6 +240,7 @@ def run_intrinio_prices():
         stock_price_data.append(
             {
                 "filing_id": filing["filing_id"],
+                "owner_cik": filing["owner_cik"],
                 "stock_prices": {
                     "open": next_day_price_data[-1].open
                     if next_day_price_data
@@ -289,6 +317,11 @@ def test():
     """
     _setup_logging("test")
     logger.info("Starting Test")
+
+    ## UPSERT TEST
+    # SUPABASE.table(SUPABASE_EXECS_TABLE).upsert(
+    #     {"cik": "1", "name": "connor1"}
+    # ).execute()
 
     ## TEST UPDATE
     # res = (
