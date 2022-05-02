@@ -135,7 +135,7 @@ def run_between_dates():
     )  # making it too many days causes a lot of SEC-API json issues
 
     num_filings: int = 0
-    num_erros: int = 0
+    num_errors: int = 0
 
     while start_date <= stop_program_date:
         logger.info(f"Getting filings for {start_date} - {end_date}")
