@@ -207,16 +207,19 @@ def run_intrinio_prices():
     ## - 90 day ago string
     now = pdl.now("America/Indianapolis")
     now_string = now.to_date_string()
+
+    logger.info("Getting Filings")
     # Get filings from supabase older than 1 day and 90 days
     ## Get tickers
     filings = get_filings_for_prices(now_string)
-
+    logger.info(f"Found {len(filings)} filings")
     # Get and update prices for those filings from intrinio
     # stock_prices = get_prices_between_dates("AAPL", start_date="2021-01-01", end_date="2022-01-01")
 
     ### Get the closest price AFTER given date
     stock_price_data = []
-    for filing in filings:
+    for index, filing in enumerate(filings):
+        logger.info(f"Getting prices for filing {index + 1} of {len(filings)}")
         date = pdl.parse(filing["filing_date"], tz="America/Indianapolis")
         next_day_date = date.add(days=1)
         ninety_day_date = date.add(days=90)
@@ -235,6 +238,7 @@ def run_intrinio_prices():
         )
 
         if not next_day_price_data and not ninety_day_price_data:
+            logger.info("No prices")
             continue
 
         stock_price_data.append(
