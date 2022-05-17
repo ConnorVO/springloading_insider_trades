@@ -271,6 +271,14 @@ def delete_error_url(url: str) -> bool:
 
 
 def get_filings_for_prices(now_date: str):
+    """Gets filings from before given date with proper data
+
+    Args:
+        now_date (str): the date it gets prices before
+
+    Returns:
+        _type_: list of filings
+    """
     try:
         filing_res = (
             # SUPABASE.table(SUPABASE_FILINGS_TABLE)

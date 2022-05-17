@@ -354,3 +354,64 @@ def test():
     # pprint.PrettyPrinter().pprint(form4_filing.__dict__)
 
     logger.info("Test Finished")
+
+
+def seed_intrinio_prices():
+    """Running after initial pull of all filings. Can't run in regular intrinio prices function because too much data
+    Run with => pipenv run python3 -c 'import springloading_insider_trades.runner; springloading_insider_trades.runner.seed_intrinio_prices()'
+    """
+    _setup_logging("run_intrinio_prices")
+    logger.info("Starting Intrinio Prices")
+
+    # Get Date strings
+    now = pdl.now("America/Indianapolis").subtract(days=1900)
+    now_string = now.to_date_string()
+
+    logger.info("Getting Filings")
+    # Get filings from supabase older than 1 day and 90 days
+    ## Get tickers
+    filings = get_filings_for_prices(now_string)
+    logger.info(f"Found {len(filings)} filings")
+
+    ### Get the closest price AFTER given date
+    stock_price_data = []
+    for index, filing in enumerate(filings):
+        logger.info(f"Getting prices for filing {index + 1} of {len(filings)}")
+        date = pdl.parse(filing["filing_date"], tz="America/Indianapolis")
+        next_day_date = date.add(days=1)
+        ninety_day_date = date.add(days=90)
+        # could be a weekend or market is closed, so need to get the next closest price
+        next_day_buffer = next_day_date.add(days=5)
+        ninety_day_buffer_string = ninety_day_date.add(days=5)
+        next_day_price_data = get_prices_between_dates(
+            filing["ticker"],
+            next_day_date.to_date_string(),
+            next_day_buffer.to_date_string(),
+        )
+        ninety_day_price_data = get_prices_between_dates(
+            filing["ticker"],
+            ninety_day_date.to_date_string(),
+            ninety_day_buffer_string.to_date_string(),
+        )
+
+        if not next_day_price_data and not ninety_day_price_data:
+            logger.info("No prices")
+            continue
+
+        stock_price_data.append(
+            {
+                "filing_id": filing["filing_id"],
+                "owner_cik": filing["owner_cik"],
+                "stock_prices": {
+                    "open": next_day_price_data[-1].open
+                    if next_day_price_data
+                    else None,
+                    "90_day": ninety_day_price_data[-1].close
+                    if ninety_day_price_data
+                    else None,
+                },
+            }
+        )
+
+    logger.info("inserting prices")
+    insert_price_data(stock_price_data)
